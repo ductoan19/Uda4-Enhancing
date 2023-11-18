@@ -55,3 +55,10 @@ kubectl get nodes
 # The command below will deploy a standard application to your AKS cluster. 
 # kubectl apply -f azure-vote.yaml
 
+
+# az account set --subscription "2b03fb07-9c2a-4cae-8a28-bee505c653ff"
+
+# az connectedk8s connect --name "uda4" --resource-group "acdnd-c4-project" --location "westus" --correlation-id "c18ab9d0-685e-48e7-ab55-12588447b0ed" --tags "Datacenter City StateOrDistrict CountryOrRegion"
+
+
+# while true; do wget -q -O- http://104.42.51.205:80; done
