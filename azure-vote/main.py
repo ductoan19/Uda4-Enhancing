@@ -7,6 +7,7 @@ from opencensus.ext.azure import metrics_exporter
 from opencensus.ext.azure.log_exporter import AzureLogHandler, AzureEventHandler
 from opencensus.ext.azure.trace_exporter import AzureExporter
 from opencensus.ext.flask.flask_middleware import FlaskMiddleware
+from opencensus.stats import stats as stats_module
 from opencensus.trace.samplers import ProbabilitySampler
 from opencensus.trace.tracer import Tracer
 
@@ -15,14 +16,15 @@ appInsightCnnStr = "InstrumentationKey=c05ca5e3-84f4-45fe-a2ce-ccdd8692c6c2;Inge
 logger = logging.getLogger(__name__)
 logger.addHandler(AzureLogHandler(connection_string=appInsightCnnStr))
 logger.addHandler(AzureEventHandler(connection_string=appInsightCnnStr))
+logger.setLevel(logging.INFO)
 
-exporter = metrics_exporter.new_metrics_exporter(
-  enable_standard_metrics=True,
-  connection_string=appInsightCnnStr)
+exporter = metrics_exporter.new_metrics_exporter(enable_standard_metrics=True, connection_string=appInsightCnnStr)
+stats = stats_module.stats
+view_manager = stats.view_manager
+view_manager.register_exporter(exporter)
 
 tracer = Tracer(
-    exporter=AzureExporter(
-        connection_string=appInsightCnnStr),
+    exporter=AzureExporter(connection_string=appInsightCnnStr),
     sampler=ProbabilitySampler(1.0),
 )
 
@@ -63,10 +65,12 @@ def index():
 
     if request.method == 'GET':
         vote1 = r.get(button1).decode('utf-8')
-        tracer.span(name="Votes for {}: {}".format(button1, vote1))
+        with tracer.span(name="Total {} Voted: {}".format(button1, vote1)) as span:
+            print("Cats Vote")
         
         vote2 = r.get(button2).decode('utf-8')
-        tracer.span(name="Votes for {}: {}".format(button2, vote2))
+        with tracer.span(name="Total {} Voted: {}".format(button1, vote1)) as span:
+            print("Dogs Vote")
         
         return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
 
