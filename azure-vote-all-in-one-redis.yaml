@@ -16,7 +16,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-back
-        image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
+        image: redis:5.0-alpine
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
@@ -57,8 +57,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        #image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
-        image: myacr202106.azurecr.io/azure-vote-front:v1
+        image: uda4cr.azurecr.io/azure-vote-front:v1
         ports:
         - containerPort: 80
         resources:
